@@ -1,4 +1,3 @@
-#include "userprog/process.h"
 #include <debug.h>
 #include <inttypes.h>
 #include <round.h>
@@ -242,10 +241,11 @@ load (const char *file_name, void (**eip) (void), void **esp)
   char *argument_values[100];
   int argument_count = 0;
   argument_values[0] = get_program(file_name);
-  char *_name = argument_values[0];
+  char *_name =argument_values[0];
+
   char *_token;
-  char *_ptr;
-  while (NULL != (_token = strtok(NULL, " ", _ptr))) {
+  char *_ptr = NULL;
+  while (NULL != (_token = strtok_r(NULL, " ", &_ptr))) {
     argument_values[argument_count] = _token;
   }
 
@@ -271,7 +271,8 @@ load (const char *file_name, void (**eip) (void), void **esp)
       || ehdr.e_machine != 3
       || ehdr.e_version != 1
       || ehdr.e_phentsize != sizeof (struct Elf32_Phdr)
-      || ehdr.e_phnum > 1024) 
+      || ehdr.e_phnum > 1024
+      )
     {
       printf ("load: %s: error loading executable\n", _name);
       goto done; 
@@ -520,6 +521,3 @@ install_page (void *upage, void *kpage, bool writable)
 }
 
 //--------------------------------------------------------------------
-
-
-
